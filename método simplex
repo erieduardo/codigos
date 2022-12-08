@@ -1,0 +1,19 @@
+install.packages("lpSolve")
+library(lpSolve)
+funcion_objetivo <- c(32000, 43000)
+funcion_objetivo
+
+# Asignar los coeficientes de las desigualdades
+# 6x1 + 8x2  >= 24         6   8     (1)
+# 8x1 + 12x2 >= 32         8   12    (2)
+# 4x1 + 6x2  >= 16         4   6     (3)
+# Definir el número de filas en 3
+restriciones_derecho <- matrix(c(6,8,8,12,4,6), nrow = 3, byrow = T)
+restriciones_derecho
+restriccion.direccion <- c(">=", ">=", ">=")
+restriccion.direccion
+lado_derecho.restriccion <- c(24, 32, 16)
+lado_derecho.restriccion
+lp(direction = "min", objective.in = funcion_objetivo, const.mat =restriciones_derecho, const.dir = restriccion.direccion, const.rhs = lado_derecho.restriccion, int.vec = c(1, 2, 3, 4, 5), all.int = T)
+lp(direction = "min", objective.in = funcion_objetivo, const.mat =restriciones_derecho, const.dir = restriccion.direccion, const.rhs = lado_derecho.restriccion, int.vec = c(1, 2, 3, 4, 5), all.int = T)$solution
+
