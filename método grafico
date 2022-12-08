@@ -1,0 +1,183 @@
+#Mayoristas         Cajas/tilapia   Cajas/camaron   Cajas/pulpo    Costo
+#Mexocean                6                 8              4        32,000
+#Intermar Mexico         8                 12             6       43,000
+
+#Se necesita minimo 24 cajas de tilapia, 32 de camaron y 16 de pulpo
+
+library(matlib)
+# Asignar los coeficientes de las restricciones
+# 6x1 + 8x2  >= 24         6   8     (1)
+# 8x1 + 12x2 >= 32         8   12    (2)
+# 4x1 + 6x2  >= 16         4   6     (3)
+# Definir el número de columnas en 2 y el número de filas en 3
+A<-matrix(c(6,8,4,8,12,6), ncol = 2, nrow = 3)
+
+# Asignar los valores del lado derecho de las desigualdades
+# 6x1 + 8x2  >= 24             24     (1)
+# 8x1 + 12x2 >= 32             32     (2)
+# 4x1 + 6x2  >= 16             16     (3)
+b<- c(24,32,16)
+
+# Se grafican las ecuaciones
+plotEqn(A,b, xlim=c(0,5), labels=TRUE)
+
+
+# A) Intersección de la recta de la restricción 1 (línea negra) con la restriccion 2 (linea roja)
+# B) Intersección de la recta de la restricción 1 (línea negra) con la recta de la
+#    restricción 3 (línea verde)
+# C) Intersección de la recta de la restricción 1 (línea verde) con la recta del eje
+#    x2
+
+# Intersección A
+
+# Intersección de la restricción 1 con la restriccion 2
+# Se resuelve de manera matricial como ;
+# 6x1 + 8x2  = 24       
+# 8x1 + 12x2 = 32
+
+# entonces las matrices A y B quedan como:
+# [A=
+#           6    8
+#           8    12
+# ;B=
+#           24
+#           32
+# ]
+# Definiendo matricialmente las funciones dentro de R, quedaría como
+
+A <- matrix(c(6,8,8,12), nrow = 2, ncol = 2, byrow = T)
+# Mostrar la matriz A
+A
+##     [,1] [,2]
+##[1,]    6  8
+##[2,]    8  12
+
+B <- matrix(c(24,32), nrow = 2, ncol = 1, byrow = F)
+# Mostrar la matriz A
+B
+##     [,1]
+##[1,]  24
+##[2,]  32
+
+# Resolviendo nos queda como
+r <- solve(t(A)%*%A)%*%t(A)%*%B
+# Mostrar la matriz r
+r
+##      [,1]
+##[1,]    4.000
+##[2,]    5.684
+
+# Intersección B
+
+# Intersección de la recta de la restricción 1 (línea negra) con la recta de la
+# restricción 3 (línea verde)
+# 6x1 + 8x2  = 24 
+# 4x1 + 6x2  = 16 
+
+# entonces las matrices A y B quedan como:
+# [A=
+#             6     8
+#             4     6
+# ;B=
+#             24
+#             16
+# ]
+
+# Definiendo matricialmente las funciones dentro de R, quedaría como
+
+A <- matrix(c(6,8,4,6), nrow = 2, ncol = 2, byrow = T)
+# Mostrar la matriz A
+A
+##     [,1] [,2]
+##[1,]    6   8
+##[2,]    4   6
+
+B <- matrix(c(24,16), nrow = 2, ncol = 1, byrow = F)
+# Mostrar la matriz A
+B
+##     [,1]
+##[1,]  24
+##[2,]  16
+
+# Resolviendo nos queda como
+r <- solve(t(A)%*%A)%*%t(A)%*%B
+# Mostrar la matriz r
+r
+##       [,1]
+##[1,]     4
+##[2,]     0
+
+# Intersección C
+
+# Intersección de la recta de la restricción 1 (línea negra) con la recta del eje
+# x2
+# 6x1 + 8x2 = 24
+#         x1 = 0
+
+# entonces las matrices A y B quedan como:
+# [A=
+#             6     8
+#             1     0
+# ;B=
+#             24
+#             0
+# ]
+
+# Definiendo matricialmente las funciones dentro de R, quedaría como
+
+A <- matrix(c(6,8,1,0), nrow = 2, ncol = 2, byrow = T)
+# Mostrar la matriz A
+A
+##     [,1] [,2]
+##[1,]    6    8
+##[2,]    1    0
+
+B <- matrix(c(24,0), nrow = 2, ncol = 1, byrow = F)
+# Mostrar la matriz A
+B
+##     [,1]
+##[1,]   24
+##[2,]    0
+
+# Resolviendo nos queda como
+r <- solve(t(A)%*%A)%*%t(A)%*%B
+# Mostrar la matriz r
+r
+##     [,1]
+##[1,]    0
+##[2,]    3
+
+# Por último se busca determinar los puntos donde la función se maximice; por 
+# lo que simplemente se evalua en la función objetivo cada uno de los puntos 
+# encontrados.
+
+# Definiendo la función objetivo
+
+# Para ello escribe el código como
+val<-matrix(c(4.000, 5.684, 4, 0, 0, 3), nrow=3, ncol = 2, byrow=T)
+# Mostrar la matriz val
+val
+##      [,1]            [,2]
+## [1,] 4.000           5.684
+## [2,]   4               0
+## [3,]   0              3
+
+FO<-matrix(c(32000,43000), nrow=2, ncol=1)
+# Mostrar la matriz FO
+FO
+##      [,1]
+## [1,]  32000
+###[2,]  43000
+
+r=val%*%FO
+# Mostrar la matriz r
+r
+
+#     [,1]
+#[1,] 372412
+#[2,] 128000
+#[3,] 129000
+
+# como se observa la solución óptima del sistema es 128000 con las variables 
+# X1=4 y x2=0
+
